@@ -42,8 +42,8 @@ public class UserControllerTest {
     void getAllUsers() throws Exception {
         // Crear usuarios de ejemplo
         List<User> users = new ArrayList<User>();
-        users.add(new User("manu", "manu@manu.com"));
-        users.add(new User("manu2", "manu2@manu.com"));
+        users.add(new User("manu", "manu@manu.com", "1234"));
+        users.add(new User("manu2", "manu2@manu.com", "1234"));
 
         // Mockear la accion del service, ya que solo interesa que ande el controller
         // Devuelve la lista de usuarios
@@ -59,15 +59,16 @@ public class UserControllerTest {
 
     @Test
     void addNewUserTest() throws Exception {
-        User newUser = new User("manu", "manu@manu.com");
+        User newUser = new User("manu", "manu@manu.com", "1234");
 
         // Mockear la accion del service, ya que solo interesa que ande el controller
-        when(userService.addUser(newUser.getName(), newUser.getEmail())).thenReturn(newUser);
+        when(userService.addUser(newUser.getName(), newUser.getEmail(), newUser.getPassword())).thenReturn(newUser);
 
         // Generar un request para un usuario nuevo, y obtener el response
         MockHttpServletResponse response = mockMvc
                 .perform(post("/user/nuevo").contentType("application/json").param("name", newUser.getName())
-                        .param("email", newUser.getEmail()).content(objectMapper.writeValueAsString(newUser)))
+                        .param("email", newUser.getEmail()).param("password", newUser.getPassword())
+                        .content(objectMapper.writeValueAsString(newUser)))
                 .andReturn().getResponse();
 
         // Chequear que el response contiene el usuario recien creado, con los mismos

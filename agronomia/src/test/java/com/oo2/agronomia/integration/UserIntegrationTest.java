@@ -49,12 +49,13 @@ public class UserIntegrationTest {
 
     @Test
     void registrarUsuarioTest() throws Exception {
-        User user = new User("manu", "manu@manu.com");
+        User user = new User("manu", "manu@manu.com", "1234");
 
         // Hacer un request a /user/nuevo con un nuevo usuario, y esperar que la
         // respuesta sea el nuevo usuario con sus datos
         mockMvc.perform(post("/user/nuevo").contentType("application/json").param("name", user.getName())
-                .param("email", user.getEmail()).content(objectMapper.writeValueAsString(user)))
+                .param("email", user.getEmail()).param("password", user.getPassword())
+                .content(objectMapper.writeValueAsString(user)))
                 .andExpect(status().isCreated()).andExpect(jsonPath("$.name", is("manu")))
                 .andExpect(jsonPath("$.id", notNullValue())).andExpect(jsonPath("$.email", is("manu@manu.com")));
 
@@ -71,8 +72,8 @@ public class UserIntegrationTest {
     void traerTodosUsusariosTest() throws Exception {
 
         // Crear 2 usuarios de prueba usando el servicio directamente
-        userService.addUser("manu1", "manu1@manu.com");
-        userService.addUser("manu2", "manu2@manu.com");
+        userService.addUser("manu1", "manu1@manu.com", "1234");
+        userService.addUser("manu2", "manu2@manu.com", "1234");
 
         // Hacer request a /user/todos y comprobar que se traen todos los usuarios
         // creados en la DB, con los datos correctos

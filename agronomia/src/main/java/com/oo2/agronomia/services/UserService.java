@@ -20,8 +20,8 @@ public class UserService {
         return (List<User>) userRepository.findAll();
     }
 
-    public User addUser(String name, String email) {
-        User newUser = new User(name, email);
+    public User addUser(String name, String email, String password) {
+        User newUser = new User(name, email, password);
         return userRepository.save(newUser);
     }
 }

@@ -22,8 +22,9 @@ public class UserController {
     private UserService userService;
 
     @PostMapping(path = "/nuevo")
-    public ResponseEntity<User> addNewUser(@RequestParam String name, @RequestParam String email) {
-        User newUser = userService.addUser(name, email);
+    public ResponseEntity<User> addNewUser(@RequestParam String name, @RequestParam String email,
+            @RequestParam String password) {
+        User newUser = userService.addUser(name, email, password);
         return new ResponseEntity<User>(newUser, HttpStatus.CREATED);
     }
 
