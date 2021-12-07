@@ -22,10 +22,7 @@ public class PurchaseService {
     }
 
     public Purchase addPurchase(String paymentMethod, User client) {
-        System.out.println("entra a service");
-
         Purchase newPurchase = new Purchase(paymentMethod, client);
-        System.out.println(newPurchase);
         return purchaseRepository.save(newPurchase);
     }
 }

@@ -30,11 +30,7 @@ public class PurchaseController {
     public ResponseEntity<Purchase> addNewPurchase(@RequestParam String paymentMethod,
             @RequestParam String clientEmail) {
         User client = userService.findByEmail(clientEmail);
-        System.out.println(client);
-
         Purchase newPurchase = purchaseService.addPurchase(paymentMethod, client);
-        System.out.println("entra a controller");
-        System.out.println(newPurchase);
         return new ResponseEntity<Purchase>(newPurchase, HttpStatus.CREATED);
     }
 
