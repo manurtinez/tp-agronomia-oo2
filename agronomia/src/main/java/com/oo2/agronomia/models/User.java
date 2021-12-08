@@ -1,9 +1,8 @@
 package com.oo2.agronomia.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class User {
@@ -16,6 +15,9 @@ public class User {
     private String email;
 
     private String password;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "client", cascade = CascadeType.ALL)
+    private Set<Purchase> purchases = new HashSet<>();
 
     // Constructor vacio
     public User() {
@@ -53,5 +55,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<Purchase> getPurchases() {
+        return purchases;
+    }
+
+    public void addPurchase(Purchase purchase) {
+        this.purchases.add(purchase);
     }
 }

@@ -1,9 +1,6 @@
 package com.oo2.agronomia.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Purchase {
@@ -13,6 +10,7 @@ public class Purchase {
 
     private String paymentMethod;
 
+    @ManyToOne
     private User client;
 
     public Purchase() {
@@ -21,6 +19,7 @@ public class Purchase {
     public Purchase(String paymentMethod, User client) {
         this.setPaymentMethod(paymentMethod);
         this.setClient(client);
+        client.addPurchase(this);
     }
 
     /**
