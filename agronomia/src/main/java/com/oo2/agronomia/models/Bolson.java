@@ -27,4 +27,8 @@ public class Bolson extends Product {
     public void addProduct(SingleProduct product) {
         this.products.add(product);
     }
+
+    public double getPrice() {
+        return this.products.stream().mapToDouble(prod -> prod.price).sum();
+    }
 }

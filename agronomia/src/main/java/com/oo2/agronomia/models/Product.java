@@ -13,6 +13,8 @@ public abstract class Product {
 
     String name;
 
+    double price;
+
     public Product(String name) {
         this.name = name;
     }
@@ -32,4 +34,6 @@ public abstract class Product {
     public void setName(String name) {
         this.name = name;
     }
+
+    abstract double getPrice();
 }

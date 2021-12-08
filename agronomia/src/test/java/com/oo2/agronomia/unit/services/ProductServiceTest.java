@@ -27,9 +27,9 @@ public class ProductServiceTest {
 
     @Test
     public void createSingleProductTest() {
-        SingleProduct singleProd = new SingleProduct("zanahoria", "verdura");
+        SingleProduct singleProd = new SingleProduct("zanahoria", "verdura", 10);
         productService.addSingleProduct(singleProd);
-        SingleProduct singleProd2 = new SingleProduct("manzana", "fruta");
+        SingleProduct singleProd2 = new SingleProduct("manzana", "fruta", 10);
         productService.addSingleProduct(singleProd2);
 
         List<SingleProduct> productList = productService.findAllSingle();
@@ -39,8 +39,8 @@ public class ProductServiceTest {
     @Test
     public void createBolsonTest() {
         // El bolson esta compuesto de varios productos simples
-        SingleProduct singleProd = new SingleProduct("zanahoria", "verdura");
-        SingleProduct singleProd2 = new SingleProduct("manzana", "fruta");
+        SingleProduct singleProd = new SingleProduct("zanahoria", "verdura", 10);
+        SingleProduct singleProd2 = new SingleProduct("manzana", "fruta", 10);
         productService.addSingleProduct(singleProd);
         productService.addSingleProduct(singleProd2);
 
@@ -56,5 +56,6 @@ public class ProductServiceTest {
         Bolson bol = bolsonList.get(0);
         assertEquals("bolson1", bol.getName());
     }
+
 
 }

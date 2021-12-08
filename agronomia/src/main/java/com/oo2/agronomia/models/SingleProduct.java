@@ -6,9 +6,10 @@ import javax.persistence.Entity;
 public class SingleProduct extends Product {
     private String type;
 
-    public SingleProduct(String name, String type) {
+    public SingleProduct(String name, String type, double price) {
         super(name);
         this.type = type;
+        this.price = price;
     }
 
     public SingleProduct() {
@@ -21,5 +22,10 @@ public class SingleProduct extends Product {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Override
+    public double getPrice() {
+        return this.price;
     }
 }
