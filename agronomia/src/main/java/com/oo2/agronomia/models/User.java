@@ -1,5 +1,7 @@
 package com.oo2.agronomia.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,8 +18,9 @@ public class User {
 
     private String password;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "client", cascade = CascadeType.ALL)
-    private Set<Purchase> purchases = new HashSet<>();
+    private Set<Purchase> purchases = new HashSet<Purchase>();
 
     // Constructor vacio
     public User() {

@@ -1,9 +1,10 @@
 package com.oo2.agronomia.unit.services;
 
+import com.oo2.agronomia.models.Client;
 import com.oo2.agronomia.models.Purchase;
 import com.oo2.agronomia.models.User;
 import com.oo2.agronomia.repositories.PurchaseRepository;
-import com.oo2.agronomia.repositories.UserRepository;
+import com.oo2.agronomia.repositories.User.ClientRepository;
 import com.oo2.agronomia.services.PurchaseService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,12 +30,13 @@ public class PurchaseServiceTest {
     private PurchaseService purchaseService;
 
     @Autowired
-    private UserRepository userRepository;
+    private ClientRepository clientRepository;
+
 
     @Test
     public void createPurchaseTest() {
         // Para crear un purchase, debe existir un usuario previamente
-        User newUser = userRepository.save(new User("manu", "manu@manu.com", "1234"));
+        User newUser = clientRepository.save(new Client("manu", "manu@manu.com", "1234", "address1"));
 
         purchaseService.addPurchase("payment1", newUser);
         List<Purchase> purchaseList = purchaseService.findAll();
@@ -49,8 +51,8 @@ public class PurchaseServiceTest {
     @Test
     public void getAllPurchasesTest() {
         // Para crear un purchase, debe existir un usuario previamente
-        User newUser = userRepository.save(new User("manu", "manu@manu.com", "1234"));
-        User newUser2 = userRepository.save(new User("manu2", "manu2@manu.com", "1234"));
+        User newUser = clientRepository.save(new Client("manu", "manu@manu.com", "1234", "address1"));
+        User newUser2 = clientRepository.save(new Client("manu2", "manu2@manu.com", "1234", "address2"));
 
         purchaseService.addPurchase("payment1", newUser);
         purchaseService.addPurchase("payment2", newUser2);

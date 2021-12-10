@@ -1,22 +1,10 @@
 package com.oo2.agronomia.unit.controllers;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oo2.agronomia.controllers.UserController;
+import com.oo2.agronomia.models.Client;
 import com.oo2.agronomia.models.User;
 import com.oo2.agronomia.services.UserService;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +13,18 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(UserController.class)
@@ -59,15 +59,15 @@ public class UserControllerTest {
 
     @Test
     void addNewUserTest() throws Exception {
-        User newUser = new User("manu", "manu@manu.com", "1234");
+        Client newUser = new Client("manu", "manu@manu.com", "1234", "address1");
 
         // Mockear la accion del service, ya que solo interesa que ande el controller
-        when(userService.addUser(newUser.getName(), newUser.getEmail(), newUser.getPassword())).thenReturn(newUser);
+        when(userService.addClient(newUser.getName(), newUser.getEmail(), newUser.getPassword(), newUser.getAddress())).thenReturn(newUser);
 
         // Generar un request para un usuario nuevo, y obtener el response
         MockHttpServletResponse response = mockMvc
-                .perform(post("/user/nuevo").contentType("application/json").param("name", newUser.getName())
-                        .param("email", newUser.getEmail()).param("password", newUser.getPassword())
+                .perform(post("/user/nuevo-cliente").contentType("application/json").param("name", newUser.getName())
+                        .param("email", newUser.getEmail()).param("password", newUser.getPassword()).param("address", newUser.getAddress())
                         .content(objectMapper.writeValueAsString(newUser)))
                 .andReturn().getResponse();
 

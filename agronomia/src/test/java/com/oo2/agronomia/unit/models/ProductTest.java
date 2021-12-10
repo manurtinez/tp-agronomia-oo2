@@ -22,11 +22,13 @@ public class ProductTest {
 
         // Ahora creo un producto bolson (compuesto)
         SingleProduct sProd2 = new SingleProduct("manzana", "fruta", 10);
+        SingleProduct sProd3 = new SingleProduct("banana", "fruta", 3.2);
         Bolson bolson = new Bolson("bolson1");
         bolson.addProduct(sProd1);
         bolson.addProduct(sProd2);
+        bolson.addProduct(sProd3);
 
-        // Deberia devolver el precio combinado de todos los productos
-        assertEquals(22.5, bolson.getPrice());
+        // Deberia devolver el precio combinado de todos los productos (25.7)
+        assertEquals(25.7, bolson.getPrice());
     }
 }

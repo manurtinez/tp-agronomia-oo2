@@ -10,7 +10,7 @@ public class Purchase {
 
     private String paymentMethod;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User client;
 
     public Purchase() {
