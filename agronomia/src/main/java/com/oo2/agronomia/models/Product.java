@@ -1,11 +1,11 @@
 package com.oo2.agronomia.models;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
 
-@MappedSuperclass
+@Entity
 public abstract class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
