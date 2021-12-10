@@ -35,5 +35,5 @@ public abstract class Product {
         this.name = name;
     }
 
-    abstract double getPrice();
+    abstract public double getPrice();
 }
