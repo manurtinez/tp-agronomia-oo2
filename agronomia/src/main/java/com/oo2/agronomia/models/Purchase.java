@@ -1,6 +1,7 @@
 package com.oo2.agronomia.models;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Purchase {
@@ -13,12 +14,16 @@ public class Purchase {
     @ManyToOne(fetch = FetchType.LAZY)
     private User client;
 
+    @ManyToMany
+    private List<Product> productList;
+
     public Purchase() {
     }
 
-    public Purchase(String paymentMethod, User client) {
+    public Purchase(String paymentMethod, User client, List<Product> productList) {
         this.setPaymentMethod(paymentMethod);
         this.setClient(client);
+        this.setProductList(productList);
         client.addPurchase(this);
     }
 
@@ -48,5 +53,18 @@ public class Purchase {
      */
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+
+    public List<Product> getProductList() {
+        return productList;
+    }
+
+    public void setProductList(List<Product> productList) {
+        this.productList = productList;
+    }
+
+    // Este metodo devuelve el total de productos tanto simples como bolson
+    public int getTotalOfProducts() {
+        return productList.stream().mapToInt(Product::getAmountProducts).sum();
     }
 }

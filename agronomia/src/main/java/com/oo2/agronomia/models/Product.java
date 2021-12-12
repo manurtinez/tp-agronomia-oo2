@@ -34,4 +34,6 @@ public abstract class Product {
     }
 
     abstract public double getPrice();
+
+    abstract public int getAmountProducts();
 }
