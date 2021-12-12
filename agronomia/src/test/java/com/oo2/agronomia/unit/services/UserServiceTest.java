@@ -26,25 +26,31 @@ public class UserServiceTest {
 
     @Test
     public void createUserTest() {
-//        User newClient = new Client("manu", "manu@manu.com", "1234", "address1");
-        userService.addClient("manu", "manu@manu.com", "1234", "address1");
-//        User newProducer = new Producer("manuprod", "manuprod@manu.com", "1234", "1122");
-        userService.addProducer("manuprod", "manuprod@manu.com", "1234", "1122");
-
-        // La lista deberia devolver 2 usuarios totales
-        List<User> userList = userService.findAll();
-        assertEquals(2, userList.size());
+        // Creo un usuario de cada tipo
+        Client cli = userService.addClient("manu", "manu@manu.com", "1234", "address1");
+        Producer producer = userService.addProducer("manuprod", "manuprod@manu.com", "1234", "1122");
 
         // El primer usuario deberia ser el cliente
-        Client retrieveUser = (Client) userList.get(0);
-        assertEquals("manu", retrieveUser.getName());
-        assertEquals("manu@manu.com", retrieveUser.getEmail());
-        assertEquals("address1", retrieveUser.getAddress());
+        assertEquals("manu", cli.getName());
+        assertEquals("manu@manu.com", cli.getEmail());
+        assertEquals("address1", cli.getAddress());
 
         // El segundo el productor
-        Producer retrieveUser2 = (Producer) userList.get(1);
-        assertEquals("manuprod", retrieveUser2.getName());
-        assertEquals("manuprod@manu.com", retrieveUser2.getEmail());
-        assertEquals("1122", retrieveUser2.getCuil());
+        assertEquals("manuprod", producer.getName());
+        assertEquals("manuprod@manu.com", producer.getEmail());
+        assertEquals("1122", producer.getCuil());
+
+    }
+
+    @Test
+    public void getAllUsersTest() {
+        // Para fines de este test, creo 4 clientes
+        for (int i = 0; i < 4; i++) {
+            userService.addClient("name" + i, "email" + i, "1234", "address" + i);
+        }
+
+        // La lista deberia devolver 4 usuarios totales
+        List<User> userList = userService.findAll();
+        assertEquals(4, userList.size());
     }
 }
