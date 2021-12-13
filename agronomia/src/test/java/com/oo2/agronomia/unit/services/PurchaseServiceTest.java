@@ -2,11 +2,10 @@ package com.oo2.agronomia.unit.services;
 
 import com.oo2.agronomia.models.*;
 import com.oo2.agronomia.models.strategy.PersonalStrategy;
-import com.oo2.agronomia.repositories.Product.SingleProductRepository;
-import com.oo2.agronomia.repositories.PurchaseRepository;
-import com.oo2.agronomia.repositories.StrategyRepository;
 import com.oo2.agronomia.repositories.User.ClientRepository;
+import com.oo2.agronomia.services.ProductService;
 import com.oo2.agronomia.services.PurchaseService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Transactional
 public class PurchaseServiceTest {
     @Autowired
-    private PurchaseRepository purchaseRepository;
+    private ProductService productService;
 
     @Autowired
     private PurchaseService purchaseService;
@@ -34,59 +33,72 @@ public class PurchaseServiceTest {
     @Autowired
     private ClientRepository clientRepository;
 
-    @Autowired
-    private StrategyRepository strategyRepository;
+    @BeforeEach
+    public void initEach() {
+        // Para crear un purchase, debe existir un usuario previamente. Creo 2
+        clientRepository.save(new Client("manu", "manu@manu.com", "1234", "address1"));
+        clientRepository.save(new Client("manu2", "manu2@manu.com", "1234", "address2"));
 
-    @Autowired
-    private SingleProductRepository singleProductRepository;
+        // Creo varios productos para usar en purchases
+        SingleProduct prod1 = productService.addSingleProduct(new SingleProduct("zanahoria", "verdura", 10));
+        SingleProduct prod2 = productService.addSingleProduct(new SingleProduct("manzana", "fruta", 20));
 
-    @Test
-    public void createPersonalPurchaseTest() {
-        // Para crear un purchase, debe existir un usuario previamente
-        User newUser = clientRepository.save(new Client("manu", "manu@manu.com", "1234", "address1"));
-
-        SingleProduct singleProd = new SingleProduct("zanahoria", "verdura", 10);
-        singleProductRepository.save(singleProd);
-        SingleProduct singleProd2 = new SingleProduct("zanahoria", "verdura", 10);
-        singleProductRepository.save(singleProd2);
-        List<Product> productList = new ArrayList<Product>();
-        productList.add(singleProd);
-        productList.add(singleProd2);
-
-        PersonalStrategy strat = strategyRepository.save(new PersonalStrategy());
-
-        purchaseService.addPersonalPurchase("payment1", newUser, productList);
-        List<Purchase> purchaseList = purchaseService.findAll();
-        assertEquals(1, purchaseList.size());
-
-        Purchase pur = purchaseList.get(0);
-        assertEquals("payment1", pur.getPaymentMethod());
-        assertEquals("manu", pur.getClient().getName());
-        assertEquals(1, pur.getClient().getPurchases().size());
+        // Creo un bolson
+        Bolson bol = new Bolson("bolson1");
+        bol.addProduct(prod1);
+        bol.addProduct(prod2);
+        productService.addBolson(bol);
     }
 
     @Test
-    public void getAllPersonalPurchasesTest() {
-        // Para crear un purchase, debe existir un usuario previamente
-        User newUser = clientRepository.save(new Client("manu", "manu@manu.com", "1234", "address1"));
-        User newUser2 = clientRepository.save(new Client("manu2", "manu2@manu.com", "1234", "address2"));
+    public void createPurchaseTest() {
+        // Traigo cualquier usuario para crear una compra
+        User newUser = clientRepository.findByName("manu");
 
-        SingleProduct singleProd = new SingleProduct("zanahoria", "verdura", 10);
-        singleProductRepository.save(singleProd);
-        SingleProduct singleProd2 = new SingleProduct("zanahoria", "verdura", 10);
-        singleProductRepository.save(singleProd2);
+        // Creo la lista de productos para la purchase
         List<Product> productList = new ArrayList<Product>();
-        productList.add(singleProd);
-        productList.add(singleProd2);
+        SingleProduct prod1 = (SingleProduct) productService.findByName("zanahoria");
+        Bolson bol = (Bolson) productService.findByName("bolson1");
+        productList.add(prod1);
+        productList.add(bol);
 
-        PersonalStrategy strat = strategyRepository.save(new PersonalStrategy());
+        // Creo la purchase con la lista de productos
+        Purchase newPurchase = purchaseService.addPurchase("payment1", newUser, productList, new PersonalStrategy());
 
-        Purchase pur1 = purchaseService.addPersonalPurchase("payment1", newUser, productList);
-        Purchase pur2 = purchaseService.addPersonalPurchase("payment2", newUser2, productList);
-        Purchase pur3 = purchaseService.addPersonalPurchase("payment3", newUser, productList);
+        // Compruebo que la compra que se creo tiene los datos esperados
+        assertEquals("payment1", newPurchase.getPaymentMethod());
+        assertEquals("manu", newPurchase.getClient().getName());
 
+        // La compra tiene 3 productos, uno simple y 2 dentro de un bolson
+        assertEquals(3, newPurchase.getTotalOfProducts());
 
-        List<Purchase> purchaseList = (List<Purchase>) purchaseRepository.findAll();
-        assertEquals(3, purchaseList.size());
+        // Y que fue agregada al array de compras del usuario
+        assertEquals(1, newPurchase.getClient().getPurchases().size());
+    }
+
+    @Test
+    public void getAllPurchasesTest() {
+        // Traigo la lista de usuarios para crear compras
+        List<User> clientList = (List<User>) clientRepository.findAll();
+
+        // Creo la lista de productos para la purchase
+        List<Product> productList = new ArrayList<Product>();
+        SingleProduct prod1 = (SingleProduct) productService.findByName("zanahoria");
+        Bolson bol = (Bolson) productService.findByName("bolson1");
+        productList.add(prod1);
+        productList.add(bol);
+
+        // Agrego 2 compras para cada usuario
+        for (int i = 0; i < clientList.size(); i++) {
+            purchaseService.addPurchase("payment" + i, clientList.get(i), productList, new PersonalStrategy());
+            purchaseService.addPurchase("payment" + i, clientList.get(i), productList, new PersonalStrategy());
+        }
+
+        // Compruebo que el total de compras es 4 (2 * 2 usuarios)
+        List<Purchase> purchaseList = purchaseService.findAll();
+        assertEquals(4, purchaseList.size());
+
+        // Compruebo que cada usuario tiene 2 compras en su listado de compras
+        purchaseList.forEach(purchase -> assertEquals(2, purchase.getClient().getPurchases().size()));
     }
 }

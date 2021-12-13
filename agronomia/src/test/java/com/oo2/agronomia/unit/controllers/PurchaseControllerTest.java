@@ -2,11 +2,9 @@ package com.oo2.agronomia.unit.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oo2.agronomia.controllers.PurchaseController;
-import com.oo2.agronomia.models.Product;
-import com.oo2.agronomia.models.Purchase;
-import com.oo2.agronomia.models.SingleProduct;
-import com.oo2.agronomia.models.User;
+import com.oo2.agronomia.models.*;
 import com.oo2.agronomia.models.strategy.PersonalStrategy;
+import com.oo2.agronomia.services.ProductService;
 import com.oo2.agronomia.services.PurchaseService;
 import com.oo2.agronomia.services.UserService;
 import org.junit.jupiter.api.Test;
@@ -46,18 +44,24 @@ public class PurchaseControllerTest {
     @MockBean
     private UserService userService;
 
+    @MockBean
+    private ProductService productService;
+
     @Test
     void getAllPurchases() throws Exception {
         List<Purchase> purchases = new ArrayList<Purchase>();
-
         User user1 = new User("manu", "manu@manu.com", "1234");
         User user2 = new User("manu2", "manu2@manu.com", "1234");
 
-        SingleProduct singleProd = new SingleProduct("zanahoria", "verdura", 10);
-        SingleProduct singleProd2 = new SingleProduct("zanahoria", "verdura", 10);
+        when(productService.findByName("zanahoria")).thenReturn(new SingleProduct("zanahoria", "verdura", 10));
+        when(productService.findByName("bolson1")).thenReturn(new Bolson("bolson1"));
+
+        // Creo la lista de productos para la purchase
         List<Product> productList = new ArrayList<Product>();
-        productList.add(singleProd);
-        productList.add(singleProd2);
+        SingleProduct prod1 = (SingleProduct) productService.findByName("zanahoria");
+        Bolson bol = (Bolson) productService.findByName("bolson1");
+        productList.add(prod1);
+        productList.add(bol);
 
         purchases.add(new Purchase("payment1", user1, productList, new PersonalStrategy()));
         purchases.add(new Purchase("payment2", user2, productList, new PersonalStrategy()));
@@ -75,15 +79,19 @@ public class PurchaseControllerTest {
     void addNewPurchaseTest() throws Exception {
         User newUser = new User("manu", "manu@manu.com", "1234");
 
-        SingleProduct singleProd = new SingleProduct("zanahoria", "verdura", 10);
-        SingleProduct singleProd2 = new SingleProduct("zanahoria", "verdura", 10);
+        when(productService.findByName("zanahoria")).thenReturn(new SingleProduct("zanahoria", "verdura", 10));
+        when(productService.findByName("bolson1")).thenReturn(new Bolson("bolson1"));
+
+        // Creo la lista de productos para la purchase
         List<Product> productList = new ArrayList<Product>();
-        productList.add(singleProd);
-        productList.add(singleProd2);
+        SingleProduct prod1 = (SingleProduct) productService.findByName("zanahoria");
+        Bolson bol = (Bolson) productService.findByName("bolson1");
+        productList.add(prod1);
+        productList.add(bol);
 
         Purchase newPurchase = new Purchase("payment1", newUser, productList, new PersonalStrategy());
 
-        when(purchaseService.addPersonalPurchase(newPurchase.getPaymentMethod(), newPurchase.getClient(), newPurchase.getProducts()))
+        when(purchaseService.addPurchase(newPurchase.getPaymentMethod(), newPurchase.getClient(), productList, new PersonalStrategy()))
                 .thenReturn(newPurchase);
         when(userService.findByEmail("manu@manu.com")).thenReturn(newUser);
 
