@@ -30,7 +30,7 @@ public class PurchaseController {
                                                    @RequestParam String clientEmail) {
         User client = userService.findByEmail(clientEmail);
 
-        // TODO Por ahora esto HARDCODEADO
+        // TODO Por ahora esto HARDCODEADO, se recibiria la lista por RequestParam
         List<Product> productList = new ArrayList<Product>();
         SingleProduct prod1 = (SingleProduct) productService.findByName("zanahoria");
         Bolson bol = (Bolson) productService.findByName("bolson1");

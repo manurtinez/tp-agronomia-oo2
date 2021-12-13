@@ -8,6 +8,7 @@ public class ComedorStrategy extends PurchaseStrategy {
     // Para los comedores, el precio total de cada producto se aplica un descuento, y luego se aplica un arancel comercial
     @Override
     public double calculatePurchasePrice(List<Product> prods) {
-        return prods.stream().mapToDouble(prod -> prod.getPrice() * 0.7).sum() * 1.2;
+        double sum = prods.stream().mapToDouble(prod -> prod.getPrice() * 0.7).sum() * 1.2;
+        return Math.round(sum * 100.0) / 100.0;
     }
 }
