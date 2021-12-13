@@ -28,9 +28,4 @@ public class SingleProduct extends Product {
     public double getPrice() {
         return this.price;
     }
-
-    @Override
-    public int getAmountProducts() {
-        return 1;
-    }
 }

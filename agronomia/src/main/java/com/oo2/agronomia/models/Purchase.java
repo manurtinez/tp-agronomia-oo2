@@ -22,18 +22,18 @@ public class Purchase {
     @ManyToOne(fetch = FetchType.LAZY)
     private User client;
 
-    @ManyToMany
-    private List<Product> productList;
+    @OneToMany
+    private List<Product> products;
 
     public Purchase() {
     }
 
-    public Purchase(String paymentMethod, User client, List<Product> productList, PurchaseStrategy purStrat) {
+    public Purchase(String paymentMethod, User client, List<Product> products, PurchaseStrategy purStrat) {
         this.setPaymentMethod(paymentMethod);
         this.setClient(client);
-        this.setProductList(productList);
+        this.products = products;
         this.purchaseStrategy = purStrat;
-        this.totalAmount = this.purchaseStrategy.calculatePurchasePrice(productList);
+        this.totalAmount = this.purchaseStrategy.calculatePurchasePrice(products);
         client.addPurchase(this);
     }
 
@@ -65,20 +65,16 @@ public class Purchase {
         this.paymentMethod = paymentMethod;
     }
 
-    public List<Product> getProductList() {
-        return productList;
-    }
-
-    public void setProductList(List<Product> productList) {
-        this.productList = productList;
-    }
-
-    // Este metodo devuelve el total de productos tanto simples como bolson
-    public int getTotalOfProducts() {
-        return productList.stream().mapToInt(Product::getAmountProducts).sum();
-    }
 
     public double getTotalAmount() {
         return this.totalAmount;
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 }

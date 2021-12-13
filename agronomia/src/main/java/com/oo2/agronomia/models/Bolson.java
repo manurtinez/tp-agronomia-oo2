@@ -31,9 +31,4 @@ public class Bolson extends Product {
     public double getPrice() {
         return this.products.stream().mapToDouble(prod -> prod.price).sum();
     }
-
-    @Override
-    public int getAmountProducts() {
-        return this.products.size();
-    }
 }

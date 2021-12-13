@@ -1,12 +1,14 @@
 package com.oo2.agronomia.models;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     int id;
 
     String name;
@@ -34,6 +36,4 @@ public abstract class Product {
     }
 
     abstract public double getPrice();
-
-    abstract public int getAmountProducts();
 }

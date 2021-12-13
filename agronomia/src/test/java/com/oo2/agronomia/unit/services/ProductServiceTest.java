@@ -27,62 +27,34 @@ public class ProductServiceTest {
 
     @Test
     public void createSingleProductTest() {
-        // Intento crear un producto
-        productService.addSingleProduct(new SingleProduct("zanahoria", "verdura", 10));
+        SingleProduct singleProd = new SingleProduct("zanahoria", "verdura", 10);
+        productService.addSingleProduct(singleProd);
+        SingleProduct singleProd2 = new SingleProduct("manzana", "fruta", 10);
+        productService.addSingleProduct(singleProd2);
 
-        // Intento traerlo y comprobar que es el correcto
-        SingleProduct prod = (SingleProduct) productService.findByName("zanahoria");
-        assertEquals("zanahoria", prod.getName());
-        assertEquals("verdura", prod.getType());
-        assertEquals(10, prod.getPrice());
-    }
-
-    @Test
-    public void getAllSingleProdTest() {
-        // Creo 3 productos simples
-        productService.addSingleProduct(new SingleProduct("zanahoria", "verdura", 10));
-        productService.addSingleProduct(new SingleProduct("manzana", "fruta", 20));
-        productService.addSingleProduct(new SingleProduct("tomate", "comodín", 30));
-
-        // Intento traer todos y compruebo que estan presentes
         List<SingleProduct> productList = productService.findAllSingle();
-        assertEquals(3, productList.size());
+        assertEquals(2, productList.size());
     }
 
     @Test
     public void createBolsonTest() {
         // El bolson esta compuesto de varios productos simples
-        productService.addSingleProduct(new SingleProduct("zanahoria", "verdura", 10));
-        productService.addSingleProduct(new SingleProduct("manzana", "fruta", 20));
+        SingleProduct singleProd = new SingleProduct("zanahoria", "verdura", 10);
+        SingleProduct singleProd2 = new SingleProduct("manzana", "fruta", 10);
+        productService.addSingleProduct(singleProd);
+        productService.addSingleProduct(singleProd2);
 
-        // Traigo los productos y creo un bolson con ellos
-        List<SingleProduct> productList = productService.findAllSingle();
         Bolson bolson = new Bolson("bolson1");
-        productList.forEach(bolson::addProduct);
+        bolson.addProduct(singleProd);
+        bolson.addProduct(singleProd2);
 
-        // Creo el bolson
         productService.addBolson(bolson);
 
-        // Traigo el bolson y compruebo que tenga los datos correctos
-        Bolson bol = (Bolson) productService.findByName("bolson1");
-        assertEquals("bolson1", bol.getName());
-        assertEquals(2, bol.getProducts().size());
-    }
-
-    @Test
-    public void getAllBolsonTest() {
-        // Para fines de este test, puedo crear 3 bolsones con 1 producto c/u
-        SingleProduct prod1 = productService.addSingleProduct(new SingleProduct("manzana", "fruta", 20));
-        Bolson bol;
-        for (int i = 0; i < 3; i++) {
-            bol = productService.addBolson(new Bolson("bolson" + i));
-            bol.addProduct(prod1);
-        }
-
-        // Traigo los bolsones y chequeo que esten correctos
         List<Bolson> bolsonList = productService.findAllBolson();
-        assertEquals(3, bolsonList.size());
-        assertEquals("manzana", bolsonList.get(0).getProducts().get(0).getName());
+        assertEquals(1, bolsonList.size());
+
+        Bolson bol = bolsonList.get(0);
+        assertEquals("bolson1", bol.getName());
     }
 
 

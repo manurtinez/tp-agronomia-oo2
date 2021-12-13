@@ -1,8 +1,9 @@
 package com.oo2.agronomia.controllers;
 
+import com.oo2.agronomia.models.Product;
 import com.oo2.agronomia.models.Purchase;
+import com.oo2.agronomia.models.SingleProduct;
 import com.oo2.agronomia.models.User;
-import com.oo2.agronomia.models.strategy.PersonalStrategy;
 import com.oo2.agronomia.services.PurchaseService;
 import com.oo2.agronomia.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,15 @@ public class PurchaseController {
             @RequestParam String clientEmail) {
         User client = userService.findByEmail(clientEmail);
 
-        // TODO Por ahora esto HARDCODEADO
-        Purchase newPurchase = purchaseService.addPurchase(paymentMethod, client, new ArrayList<>(), new PersonalStrategy());
+        // TODO SOLO DE PRUEBA
+        SingleProduct singleProd = new SingleProduct("zanahoria", "verdura", 10);
+        SingleProduct singleProd2 = new SingleProduct("zanahoria", "verdura", 10);
+        List<Product> productList = new ArrayList<Product>();
+        productList.add(singleProd);
+        productList.add(singleProd2);
+        // END TODO
+
+        Purchase newPurchase = purchaseService.addPersonalPurchase(paymentMethod, client, productList);
         return new ResponseEntity<Purchase>(newPurchase, HttpStatus.CREATED);
     }
 
