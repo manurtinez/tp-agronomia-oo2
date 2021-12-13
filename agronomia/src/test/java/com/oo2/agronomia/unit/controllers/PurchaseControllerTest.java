@@ -103,7 +103,8 @@ public class PurchaseControllerTest {
                 .andReturn().getResponse();
 
         assertEquals(201, response.getStatus());
-        Purchase assertPurchase = objectMapper.readValue(response.getContentAsString(),
+        String stringRes = response.getContentAsString();
+        Purchase assertPurchase = objectMapper.readValue(stringRes,
                 Purchase.class);
         assertEquals(newPurchase.getPaymentMethod(), assertPurchase.getPaymentMethod());
         assertEquals(newPurchase.getClient().getEmail(), assertPurchase.getClient().getEmail());

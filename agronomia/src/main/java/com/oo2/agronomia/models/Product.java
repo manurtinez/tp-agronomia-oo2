@@ -1,9 +1,12 @@
 package com.oo2.agronomia.models;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import javax.persistence.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@JsonDeserialize(as = SingleProduct.class)
 public abstract class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
